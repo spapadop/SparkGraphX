@@ -49,10 +49,15 @@ public class Exercise_3 {
         public Iterator<Tuple2<Object, Info>> apply(EdgeTriplet<Info, Integer> triplet) {
             Tuple2<Object,Info> sourceVertex = triplet.toTuple()._1();
             Tuple2<Object,Info> dstVertex = triplet.toTuple()._2();
+//            System.out.println("SourceVertex: " + sourceVertex);
+//            System.out.println("dstVertex: " + dstVertex);
+//            System.out.println("SourceVertex_1: " + sourceVertex._1());
 
             boolean flag = sourceVertex._2().getWeight() == Integer.MAX_VALUE;
             Integer valueEdge =  flag ? Integer.MAX_VALUE : sourceVertex._2().getWeight() + triplet.toTuple()._3();
-            String path = sourceVertex._2.getPath() + " - " + sourceVertex._1(); //current_path + myself_node
+            String path = sourceVertex._2.getPath() + " " + dstVertex._1(); //current_path + myself_node
+//            List<Object> paths = new ArrayList<>();
+//            paths.add(sourceVertex._1());
 
             System.out.println("Starting: sendMsg (Scatter)");
             System.out.println("source: " + sourceVertex);
@@ -60,7 +65,7 @@ public class Exercise_3 {
             System.out.println("attr: " + valueEdge);
             System.out.println("path: " + path);
 
-            if (dstVertex._2.getWeight() <= valueEdge) {   // source vertex value is bigger than dst vertex?
+            if ((dstVertex._2.getWeight() <= valueEdge)) {   // source vertex value is bigger than dst vertex?
                 // do nothing
                 System.out.println("do nothing");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Info>>().iterator()).asScala();
@@ -95,7 +100,7 @@ public class Exercise_3 {
                 .build();
 
         List<Tuple2<Object,Info>> vertices = Lists.newArrayList(
-                new Tuple2<Object,Info>(1l,new Info()),
+                new Tuple2<Object,Info>(1l,new Info(0,"1")),
                 new Tuple2<Object,Info>(2l,new Info()),
                 new Tuple2<Object,Info>(3l,new Info()),
                 new Tuple2<Object,Info>(4l,new Info()),
@@ -132,9 +137,9 @@ public class Exercise_3 {
             .vertices()
             .toJavaRDD()
             .foreach(v -> {
-                    //Tuple2<Object,Info> vertex = (Tuple2<Object,Info>) v;
+                    Tuple2<Object,Info> vertex = (Tuple2<Object,Info>) v;
 
-                    //System.out.println("Minimum cost to get from "+labels.get(1l)+" to "+labels.get(vertex._1())+" is "+vertex._2());
+                    System.out.println("Minimum cost to get from "+labels.get(1l)+" to "+labels.get(vertex._1())+" is "+vertex._2().getWeight() + " with path " + vertex._2().getPath());
                 });
     }
 	

@@ -26,11 +26,11 @@ public class Exercise_2 {
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            //System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message);
+            System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message);
             if (message == Integer.MAX_VALUE) {             // superstep 0
                 return vertexValue;
             } else {                                        // superstep > 0
-                //System.out.println("============ Superstep begins =============");
+                System.out.println("============ Superstep begins =============");
                 return Math.min(vertexValue,message);
             }
         }
@@ -43,17 +43,17 @@ public class Exercise_2 {
             Tuple2<Object,Integer> dstVertex = triplet.toTuple()._2();
 
             Integer valueEdge = sourceVertex._2() == Integer.MAX_VALUE ? Integer.MAX_VALUE : sourceVertex._2() + triplet.toTuple()._3();
-//            System.out.println("Starting: sendMsg (Scatter)");
-//            System.out.println("source: " + sourceVertex);
-//            System.out.println("destination: " + dstVertex);
-//            System.out.println("attr: " + valueEdge);
+            System.out.println("Starting: sendMsg (Scatter)");
+            System.out.println("source: " + sourceVertex);
+            System.out.println("destination: " + dstVertex);
+            System.out.println("attr: " + valueEdge);
             if (dstVertex._2 <= valueEdge) {   // source vertex value is bigger than dst vertex?
                 // do nothing
-                //System.out.println("do nothing");
+                System.out.println("do nothing");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
             } else {
                 // propagate source vertex value
-                //System.out.println("propagate source vertex value");
+                System.out.println("propagate source vertex value");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),valueEdge)).iterator()).asScala();
             }
         }
@@ -62,8 +62,8 @@ public class Exercise_2 {
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Integer o, Integer o2) {
-//            System.out.println("Starting: merge (Gather)");
-//            System.out.println("Taking the min of " + o + "  and " + o2);
+            System.out.println("Starting: merge (Gather)");
+            System.out.println("Taking the min of " + o + "  and " + o2);
             return Math.min(o,o2);
         }
     }

@@ -32,4 +32,7 @@ public class Info implements Serializable {
         this.path = path;
     }
 
+    public String toString(){
+        return this.getPath() + " " + this.getWeight();
+    }
 }
