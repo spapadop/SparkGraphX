@@ -22,15 +22,23 @@ import java.util.Map;
 
 public class Exercise_3 {
 
+    private static Info infoMin (Info o, Info o2){
+        if(o.getWeight() < o2.getWeight()){
+            return o;
+        } else {
+            return o2;
+        }
+    }
+
     private static class VProg extends AbstractFunction3<Long,Info,Info,Info> implements Serializable {
 
         @Override
         public Info apply(Long vertexID, Info vertexValue, Info message) {
-            System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message);
+            System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message.toString());
             if (message.getWeight() == Integer.MAX_VALUE) {             // superstep 0
-                return new Info();
+                return vertexValue;
             } else {                                        // superstep > 0
-                return new Info();
+                return infoMin(vertexValue,message);
             }
         }
 
@@ -42,8 +50,9 @@ public class Exercise_3 {
             Tuple2<Object,Info> sourceVertex = triplet.toTuple()._1();
             Tuple2<Object,Info> dstVertex = triplet.toTuple()._2();
 
-            Integer valueEdge = sourceVertex._2().getWeight() == Integer.MAX_VALUE ? Integer.MAX_VALUE : sourceVertex._2().getWeight() + triplet.toTuple()._3();
-            String path = " - " + sourceVertex._1(); //current_path + myself_node
+            boolean flag = sourceVertex._2().getWeight() == Integer.MAX_VALUE;
+            Integer valueEdge =  flag ? Integer.MAX_VALUE : sourceVertex._2().getWeight() + triplet.toTuple()._3();
+            String path = sourceVertex._2.getPath() + " - " + sourceVertex._1(); //current_path + myself_node
 
             System.out.println("Starting: sendMsg (Scatter)");
             System.out.println("source: " + sourceVertex);
@@ -58,7 +67,7 @@ public class Exercise_3 {
             } else {
                 // propagate source vertex value
                 System.out.println("propagate source vertex value");
-                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Info>(triplet.dstId(), new Info())).iterator()).asScala();
+                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Info>(triplet.dstId(), new Info(valueEdge,path))).iterator()).asScala();
             }
         }
     }
@@ -67,8 +76,9 @@ public class Exercise_3 {
         @Override
         public Info apply(Info o, Info o2) {
             System.out.println("Starting: merge (Gather)");
-            System.out.println("Taking the min of " + o + "  and " + o2);
-            return new Info();
+            System.out.println("Taking the min of " + o.getWeight() + " of path " + o.getPath());
+            System.out.println("and " + o2.getWeight() + " of path " + o2.getPath());
+            return infoMin(o,o2);
             //return Math.min(new Info());
         }
     }
@@ -92,6 +102,7 @@ public class Exercise_3 {
                 new Tuple2<Object,Info>(5l,new Info()),
                 new Tuple2<Object,Info>(6l,new Info())
         );
+
         List<Edge<Integer>> edges = Lists.newArrayList(
                 new Edge<Integer>(1l,2l, 4), // A --> B (4)
                 new Edge<Integer>(1l,3l, 2), // A --> C (2)

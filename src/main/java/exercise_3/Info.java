@@ -11,6 +11,11 @@ public class Info implements Serializable {
         path = "";
     }
 
+    public Info(int w, String p){
+        this.weight = w;
+        this.path = p;
+    }
+
     public Integer getWeight() {
         return weight;
     }
@@ -26,4 +31,5 @@ public class Info implements Serializable {
     public void setPath(String path) {
         this.path = path;
     }
+
 }

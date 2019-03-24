@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.spark.sql.functions.desc;
 
 
 public class Exercise_4 {
@@ -69,9 +70,15 @@ public class Exercise_4 {
 		GraphFrame gf = GraphFrame.apply(vertices,edges);
 
 		GraphFrame results = gf.pageRank().resetProbability(0.15).maxIter(1).run();
-		System.out.println(results);
-		//results.vertices().select("id", "pagerank").show(5);
+		System.out.println(results.vertices());
+		for(String s: results.vertexColumns()){
+            System.out.println(s);
+        }
 
+        results.vertices().select("id", "title", "pagerank").orderBy(desc("pagerank")).limit(10).show();
+		//results.vertices().select("id,title,pagerank").orderBy("pagerank").col("pagerank").desc();
+		//
+        System.out.println(results);
 	}
 	
 }
