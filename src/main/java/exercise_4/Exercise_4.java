@@ -69,7 +69,7 @@ public class Exercise_4 {
 		Dataset<Row> edges = sqlCtx.createDataFrame(edges_rdd, edges_schema);
 		GraphFrame gf = GraphFrame.apply(vertices,edges);
 
-		GraphFrame results = gf.pageRank().resetProbability(0.15).maxIter(10).run();
+		GraphFrame results = gf.pageRank().resetProbability(0.30).maxIter(10).run();
         results.vertices().select("id", "title", "pagerank").orderBy(desc("pagerank")).limit(10).show();
 
 	}

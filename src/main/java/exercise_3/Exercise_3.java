@@ -34,7 +34,7 @@ public class Exercise_3 {
 
         @Override
         public Info apply(Long vertexID, Info vertexValue, Info message) {
-            System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message.toString());
+//            System.out.println("-----(Apply-code) VProg: vertexID: " + vertexID + " with value: " + vertexValue + " and message: " + message.toString());
             if (message.getWeight() == Integer.MAX_VALUE) {             // superstep 0
                 return vertexValue;
             } else {                                        // superstep > 0
@@ -59,19 +59,19 @@ public class Exercise_3 {
 //            List<Object> paths = new ArrayList<>();
 //            paths.add(sourceVertex._1());
 
-            System.out.println("Starting: sendMsg (Scatter)");
-            System.out.println("source: " + sourceVertex);
-            System.out.println("destination: " + dstVertex);
-            System.out.println("attr: " + valueEdge);
-            System.out.println("path: " + path);
+//            System.out.println("Starting: sendMsg (Scatter)");
+//            System.out.println("source: " + sourceVertex);
+//            System.out.println("destination: " + dstVertex);
+//            System.out.println("attr: " + valueEdge);
+//            System.out.println("path: " + path);
 
             if ((dstVertex._2.getWeight() <= valueEdge)) {   // source vertex value is bigger than dst vertex?
                 // do nothing
-                System.out.println("do nothing");
+//                System.out.println("do nothing");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Info>>().iterator()).asScala();
             } else {
                 // propagate source vertex value
-                System.out.println("propagate source vertex value");
+//                System.out.println("propagate source vertex value");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Info>(triplet.dstId(), new Info(valueEdge,path))).iterator()).asScala();
             }
         }
@@ -80,9 +80,9 @@ public class Exercise_3 {
     private static class merge extends AbstractFunction2<Info,Info,Info> implements Serializable {
         @Override
         public Info apply(Info o, Info o2) {
-            System.out.println("Starting: merge (Gather)");
-            System.out.println("Taking the min of " + o.getWeight() + " of path " + o.getPath());
-            System.out.println("and " + o2.getWeight() + " of path " + o2.getPath());
+//            System.out.println("Starting: merge (Gather)");
+//            System.out.println("Taking the min of " + o.getWeight() + " of path " + o.getPath());
+//            System.out.println("and " + o2.getWeight() + " of path " + o2.getPath());
             return infoMin(o,o2);
             //return Math.min(new Info());
         }
@@ -139,8 +139,15 @@ public class Exercise_3 {
             .foreach(v -> {
                     Tuple2<Object,Info> vertex = (Tuple2<Object,Info>) v;
 
-                    System.out.println("Minimum cost to get from "+labels.get(1l)+" to "+labels.get(vertex._1())+" is "+vertex._2().getWeight() + " with path " + vertex._2().getPath());
-                });
+                    String res = "[";
+                    for (Long l: vertex._2().getPathInLongs()){
+                        res += labels.get(l) + ", ";
+                    }
+                    res = res.substring(0, res.length()-2);
+                    res += "]";
+                    System.out.println("Minimum path to get from "+labels.get(1l)+" to "+labels.get(vertex._1())+" is "+ res + " with cost " + vertex._2().getWeight());
+
+            });
     }
 	
 }
